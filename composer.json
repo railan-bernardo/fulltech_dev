@@ -1,0 +1,16 @@
+{
+	"name": "railan-bernardo/fulltech_dev",
+	"description": "CRUD com PHP",
+	"minimo-stability": "stable",
+	"autors": [
+		{
+			"name": "Railan Bernardo",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-4":{
+			"Source\\": "source/"
+		}
+	}
+}
