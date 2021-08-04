@@ -2,7 +2,7 @@
 
 require __DIR__ . "/vendor/autoload.php";
 
-use Source\Entity\User;
+use \Source\Entity\User;
 
 if(isset($_POST['login'])){
 
@@ -12,6 +12,9 @@ if(isset($_POST['login'])){
 	$obUser->password = $_POST['password'];
 
 	$obUser->cadastrar(); 
+
+	var_dump($obUser);
+	exit;
 
 }
 

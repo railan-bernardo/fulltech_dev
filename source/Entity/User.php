@@ -22,8 +22,7 @@ class User
 		//conexao com o banco
 		$connect = new Connect('user_login');
 
-		$connect->insert([
-
+		$this->id = $connect->insert([
 				'login'=> $this->login,
 				'password'=> $this->password
 		]);

@@ -16,25 +16,25 @@ class Connect
 	 const DB_NAME = "fulltech_dev";
 
 	private $table;
-	private $query;
+	
 
 	/**
 	 * @var PDO
 	 */
-	private static $instance;
+	private $instance;
 
 	public function __construct($entity = null)
 	{
 		$this->table = $entity;
-		Connect::getInstance();
+		$this->getInstance();
 	}
 
 
 	//conectar com o banco
-	public static function getInstance()
+	private function getInstance()
 	{
 		try {
-			self::$instance = new PDO(
+			$this->instance = new PDO(
              "mysql:host=". self::DB_HOST .";dbname=". self::DB_NAME,
              self::DB_USER,
              self::DB_PASSWORD
@@ -45,30 +45,41 @@ class Connect
 		}
 	}
 
+	/**
+		*responsavel por executar a query no banco
+	 *@param string $query
+	 *@param array $params
+	 * @return PDOStatement
+	 */
+
+	private function execute($query, $params = [])
+	{
+		try {
+			$statement = $this->instance->prepare($query);
+			$statement->execute($params);
+			return $statement;
+		} catch (PDOException $e) {
+			die("Opss: ".$e->getMessage());
+		}
+	}
+
 	//inseri dados no banco
 	public function insert($values)
 	{
-		//prepara os keys e values
+		//prepara os keys e links
 		$fields =  array_keys($values);
-		$binds =   str_pad([], count($fields), ?);
-
+		$binds =   array_pad([], count($fields), '?');
+		
 		//monta a query
-		$this->query = Connect::getInstance()->prepare("INSERT INTO " .$this->table."(". explode(',', $fields) .") VALUES ({$binds})");
-		//$smt = $this->getInstance()->prepare($query);
-		//$query->execute($this->filter($values));
-		var_dump($this->query);
-		//sreturn $this->getInstance()->lastInsertId();
+		$query = 
+		"INSERT INTO " .$this->table."(". implode(',', $fields) .") VALUES "."(".implode(',',$binds).")";
+
+		//executa a query
+		$this->execute($query, array_values($values));
+		return $this->instance->lastInsertId();
+	
 	}
 
-	private function filter(?array $data): ?array
-	{
-		$filter = [];
-		foreach ($data as $key => $value) {
-			$filter[$key] = (is_null($value) ? null : filter_var($value, FILTER_DEFAULT);
-		}
-
-		return $filter;
-	}
 }
 
  ?>
